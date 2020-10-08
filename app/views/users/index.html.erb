@@ -59,6 +59,7 @@
             <tr>
               <td><span><%= attachment_image_tag user, :profile_image, :fill, 40, 60, fallback: "no_image.jpg", size:'40x40' %></span></td>
               <td><span><%= user.name %></span></td>
+              <td><span><%= render 'relationships/stats' %></span></td>
               <td><span>
                 <% if current_user.following?(@user) %>
                   <%= link_to 'フォロー外す', unfollow_path(@user.id), method: :POST %>
