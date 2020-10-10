@@ -44,18 +44,6 @@ class UsersController < ApplicationController
 
   def destroy
   end
-  
-  def followed
-    @user = User.find(params[:id])
-    @users = @user.followed.all
-    render 'show_follow'
-  end
-
-  def follower
-    @user = User.find(params[:id])
-    @users = @user.follower.all
-    render 'show_follower'
-  end
 
   private
   def user_params

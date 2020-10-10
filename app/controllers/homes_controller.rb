@@ -1,6 +1,5 @@
 class HomesController < ApplicationController
-  def index
-    flash[:notice] = "Signed out successfully."
+  def top
   end
 
   def about

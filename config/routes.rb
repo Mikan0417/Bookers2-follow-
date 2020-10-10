@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
-  root to: 'homes#index'
+  root to: 'homes#top'
   get 'home/about' => 'homes#about'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   resources :books do
@@ -8,10 +8,8 @@ Rails.application.routes.draw do
     resources :book_comments, only: [:create, :destroy]
   end
   resources :users do
-    member do
-     get :followed, :follower
-    end
+    resource :relationships, only: [:create, :destroy]
+  	get 'followings' => 'relationships#followings', as: 'followings'
+  	get 'followers' => 'relationships#followers', as: 'followers'
   end
-  post 'follow/:id' => 'relationships#follow', as: 'follow' # フォローする
-  post 'unfollow/:id' => 'relationships#unfollow', as: 'unfollow' # フォロー外す
 end

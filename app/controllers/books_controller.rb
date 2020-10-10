@@ -1,15 +1,7 @@
 class BooksController < ApplicationController
   before_action :authenticate_user!
-  before_action :correct_user, only: [:edit, :update]
+  before_action :ensure_correct_user, only: [:edit, :update, :destroy]
 
-  def index
-    @book = Book.new
-    @books = Book.all
-    @users = User.all
-    @user = current_user
-    @favorite = Favorite.new
-  end
-  
   def show
     @book = current_user.books.build
     @book_new = Book.new
@@ -18,10 +10,15 @@ class BooksController < ApplicationController
     @favorite = Favorite.new
     @book_comment = BookComment.new
   end
-  
-  def new
+
+  def index
+    @book = Book.new
+    @books = Book.all
+    @users = User.all
+    @user = current_user
+    @favorite = Favorite.new
   end
-  
+
   def create
     @book = Book.new(book_params)
     @book.user_id = current_user.id
@@ -29,39 +26,36 @@ class BooksController < ApplicationController
       redirect_to book_path(@book), notice: "You have created book successfully."
     else
       @books = Book.all
-      render :"index"
+      render 'index'
     end
   end
-  
+
   def edit
-    @book = Book.find(params[:id])
   end
-  
+
   def update
-    @book = Book.find(params[:id])
     if @book.update(book_params)
-      redirect_to book_path(@book.id), notice: "You have updated book successfully."
+      redirect_to book_path(@book), notice: "You have updated book successfully."
     else
-      render 'edit'
-      flash[:danger]= "Book"
+      render "edit"
     end
   end
-  
+
   def destroy
-    book = Book.find(params[:id])
-    book.destroy
+    @book.destroy
     redirect_to books_path
   end
-  
+
   private
-    def book_params
-      params.require(:book).permit(:title, :body)
+
+  def book_params
+    params.require(:book).permit(:title, :body)
+  end
+
+  def ensure_correct_user
+    @book = Book.find(params[:id])
+    unless @book.user == current_user
+      redirect_to books_path
     end
-  
-    def correct_user
-      @book = Book.find(params[:id])
-      if current_user != @book.user
-        redirect_to books_path
-      end
-    end
+  end
 end
